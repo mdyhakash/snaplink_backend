@@ -25,7 +25,7 @@ export const initDB= async()=>{
         user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
         title VARCHAR(255),
         original_url TEXT NOT NULL,
-        short_url VARCHAR(30) NOT NULL UNIQUE,
+        short_code VARCHAR(30) NOT NULL UNIQUE,
         click_count INTEGER DEFAULT 0,
         is_active BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

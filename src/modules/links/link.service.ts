@@ -1,7 +1,8 @@
 import { pool } from "../../db"
+import type { IcreateLink } from "./link.interface"
 
 
-const createLinkIntoDB= async(payload)=>{
+const createLinkIntoDB= async(payload:IcreateLink)=>{
 
     const {title,original_url,short_code,user_id} = payload
     const result = await pool.query(`
@@ -13,8 +14,21 @@ const createLinkIntoDB= async(payload)=>{
     return result.rows[0]
 }
 
+const getLinkByShortCode = async(short_code:string)=>{
+
+    const result = await pool.query(`
+    SELECT *
+    FROM links
+    WHERE short_code = $1
+    `,[short_code])
+
+    return result.rows[0]
+
+}
+
 
 export const linkService ={
     createLinkIntoDB,
+    getLinkByShortCode,
 
 }

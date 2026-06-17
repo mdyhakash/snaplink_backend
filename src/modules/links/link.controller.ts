@@ -24,7 +24,9 @@ const createLink = async(req:Request,res:Response)=>{
         return res.status(201).json({
             success:true,
             message: "Short code created successfully",
-            data: link
+            data: {...link,
+                short_url:`${process.env.BASE_URL}${link.short_code}`
+            }
         })
     }catch(err:any){
         res.status(500).json({
@@ -35,6 +37,31 @@ const createLink = async(req:Request,res:Response)=>{
     }
 }
 
+const redirectLink = async(req:Request,res:Response)=>{
+    const {short_code} = req.params
+
+    try {
+        const link = await linkService.getLinkByShortCode(short_code as string)
+
+        if(!link){
+            return res.status(404).json({
+                success:false,
+                message: "Link not found"
+            })
+        }
+
+        return res.redirect(link.original_url)
+    } catch (err:any) {
+        res.status(500).json({
+            success:false,
+            message:"Failed to redirect link",
+            error:err.message
+        })
+        
+    }
+}
+
 export const linkController = {
     createLink,
+    redirectLink
 }

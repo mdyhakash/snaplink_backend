@@ -26,9 +26,22 @@ const getLinkByShortCode = async(short_code:string)=>{
 
 }
 
+const getUserLinksFromDB = async(user_id:number)=>{
+    const result = await pool.query(`
+
+    SELECT *
+    FROM links 
+    WHERE user_id = $1 
+    ORDER BY
+    created_at DESC        
+    `,[user_id])
+
+}
+
 
 export const linkService ={
     createLinkIntoDB,
     getLinkByShortCode,
+    getUserLinksFromDB,
 
 }

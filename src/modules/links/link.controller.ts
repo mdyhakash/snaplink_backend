@@ -61,7 +61,19 @@ const redirectLink = async(req:Request,res:Response)=>{
     }
 }
 
+const getUserLinks = async(req:Request,res:Response)=>{
+    const user_id =  req.user?.id
+
+    if(!user_id){
+    return res.status(401).json({
+        success:false,
+        message:"Unauthorized"
+    })
+}
+
+}
 export const linkController = {
     createLink,
-    redirectLink
+    redirectLink,
+    getUserLinks
 }

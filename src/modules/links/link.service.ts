@@ -41,9 +41,31 @@ const getUserLinksFromDB = async (user_id: number) => {
   );
   return result.rows;
 };
-
+const recordClickEvent = async (link_id: number) => {
+  await pool.query(
+    `
+    UPDATE links 
+    SET click_count = click_count + 1
+    WHERE id = $1
+    `,
+    [link_id],
+  );
+};
+const getTotalClicksFromDB = async (link_id: number, user_id: number) => {
+  const result = await pool.query(
+    `
+    SELECT click_count 
+    FROM links
+    WHERE id =$1 AND user_id=$2
+    `,
+    [link_id, user_id],
+  );
+  return result.rows[0];
+};
 export const linkService = {
   createLinkIntoDB,
   getLinkByShortCode,
   getUserLinksFromDB,
+  recordClickEvent,
+  getTotalClicksFromDB,
 };

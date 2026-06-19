@@ -9,5 +9,6 @@ const router = Router();
 router.post("/create", optionalAuth, linkController.createLink);
 
 router.get("/", authMiddleware, linkController.getUserLinks);
+router.get("/:id/clicks", authMiddleware, linkController.getTotalClick);
 
 export const linkRoute = router;

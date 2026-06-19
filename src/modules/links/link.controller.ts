@@ -48,8 +48,19 @@ const redirectLink = async (req: Request, res: Response) => {
         message: "Link not found",
       });
     }
+    //send redirect immediately
+    res.redirect(link.original_url);
 
-    return res.redirect(link.original_url);
+    //track click
+    try {
+      await linkService.recordClickEvent(link.id);
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to redirect link",
+        error: error.message,
+      });
+    }
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -84,8 +95,43 @@ const getUserLinks = async (req: Request, res: Response) => {
     });
   }
 };
+
+const getTotalClick = async (req: Request, res: Response) => {
+  const link_id = parseInt(req.params.id as string);
+  const user_id = req.user?.id;
+
+  if (!user_id) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized",
+    });
+  }
+
+  try {
+    const link = await linkService.getTotalClicksFromDB(link_id, user_id);
+
+    if (!link) {
+      return res.status(404).json({
+        success: false,
+        message: "Link not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Click count fetched successfully",
+      data: { link_id, total_clicks: link.click_count },
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch click count",
+      error: error.message,
+    });
+  }
+};
 export const linkController = {
   createLink,
   redirectLink,
   getUserLinks,
+  getTotalClick,
 };

@@ -2,10 +2,17 @@ import express, { type Request, type Response } from "express";
 import { linkRoute } from "./modules/links/link.route";
 import { linkController } from "./modules/links/link.controller";
 import { authRoute } from "./modules/auth/auth.route";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  }),
+);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
